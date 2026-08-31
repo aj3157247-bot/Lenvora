@@ -1,0 +1,23 @@
+# Android / Gradle
+.gradle/
+build/
+*.iml
+local.properties
+
+# Node
+node_modules/
+dist/
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Model binaries / generated data
+*.onnx
+*.tflite
+*.bin
