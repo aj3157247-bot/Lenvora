@@ -13,6 +13,8 @@ jobs:
         run: |
           set -e
           for dir in android admin backend database models shared docs; do
-            test -d "$dir" || exit 1
+            test -d "$dir" || { echo "Missing directory: $dir"; exit 1; }
           done
-          echo "Structure OK"
+          test -f backend/package-lock.json
+          test -f admin/package-lock.json
+          echo "Structure and lockfiles OK"
