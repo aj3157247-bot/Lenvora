@@ -1,0 +1,11 @@
+{
+  "name": "lenvora-backend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Lenvora V2 backend API",
+  "scripts": {
+    "dev": "echo TODO",
+    "build": "echo TODO",
+    "start": "echo TODO"
+  }
+}
