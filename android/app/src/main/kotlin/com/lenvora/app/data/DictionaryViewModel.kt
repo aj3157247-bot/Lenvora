@@ -15,6 +15,5 @@ class DictionaryViewModel(app:Application):AndroidViewModel(app){
     val history=repo.history().stateIn(viewModelScope,SharingStarted.WhileSubscribed(5000),emptyList())
     init{viewModelScope.launch{repo.seed()}}
     fun setQuery(v:String){query.value=v}
-    fun setLanguage(v:String){language.value=v}
-    fun toggleFavorite(item:DictionaryEntity)=viewModelScope.launch{repo.favorite(item.id,!item.isFavorite);repo.recordHistory(item.word,language.value)}
+    fun toggleFavorite(item:DictionaryEntity)=viewModelScope.launch{repo.favorite(item.id,!item.isFavorite);repo.recordHistory(item.word, language.value)}
 }
