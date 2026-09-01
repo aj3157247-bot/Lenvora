@@ -1,0 +1,10 @@
+#!/bin/sh
+APP_HOME=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+JAVACMD="${JAVA_HOME:-}/bin/java"
+[ -x "$JAVACMD" ] || JAVACMD=java
+if [ ! -f "$CLASSPATH" ]; then
+  echo "gradle-wrapper.jar is missing. Generate the wrapper once with Gradle 8.9 and commit it." >&2
+  exit 1
+fi
+exec "$JAVACMD" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
