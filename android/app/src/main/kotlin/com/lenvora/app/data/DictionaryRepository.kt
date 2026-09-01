@@ -11,9 +11,5 @@ class DictionaryRepository(private val dao:DictionaryDao){
         DictionaryEntity(language="en",word="beautiful",partOfSpeech="adjective",meaning="زیبا",example="What a beautiful day.")
     ))
     suspend fun favorite(id:Long,v:Boolean)=dao.setFavorite(id,v)
-    suspend fun recordHistory(q:String,l:String){
-        if(q.isNotBlank()){
-            dao.addHistory(SearchHistoryEntity(query=q,language=l))
-        }
-    }
+    suspend fun recordHistory(q:String,l:String)=if(q.isNotBlank())dao.addHistory(SearchHistoryEntity(query=q,language=l))
 }
