@@ -1,48 +1,26 @@
-# Lenvora V2 - Database + Authentication
+# Lenvora V2 Dictionary Engine
 
-This package adds the PostgreSQL schema and secure admin authentication foundation.
+This package adds the dictionary foundation for Lenvora V2.
 
-## Important
-- Do not commit `.env`.
-- Use a strong `JWT_SECRET` (32+ characters).
-- Production credentials belong in GitHub Actions Secrets / your hosting provider's secret manager.
-- The admin creation endpoint is protected; there is no public "create admin" endpoint.
+## Features
+- Word search API
+- Meanings
+- Examples
+- Pronunciation fields
+- Favorites/history database tables
+- Admin-only word creation
+- Admin-only meaning creation
+- Translation API contract for the future offline engine
 
-## Install backend dependencies
-
-```bash
-cd backend
-npm install
-cp .env.example .env
-```
-
-Then create the PostgreSQL database and run:
-
-```bash
-psql "$DATABASE_URL" -f ../database/schema.sql
-```
+## Database
 
 Run:
 
 ```bash
-npm run dev
+psql "$DATABASE_URL" -f database/schema.sql
+psql "$DATABASE_URL" -f database/dictionary.sql
 ```
 
-## API
+## Important
 
-`POST /api/v1/auth/login`
-
-```json
-{
-  "email": "admin@example.com",
-  "password": "your-password"
-}
-```
-
-Then send:
-
-`Authorization: Bearer <token>`
-
-to protected endpoints.
-
-This is the authentication foundation. Password reset, refresh tokens, rate limiting, audit logs and production deployment controls should be added before public release.
+The sentence translation engine is **not falsely implemented as a normal dictionary lookup**. Real offline sentence translation requires downloadable/on-device language models. That engine will be added in the Android stage.
