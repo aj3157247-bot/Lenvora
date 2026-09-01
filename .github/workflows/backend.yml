@@ -1,22 +1,26 @@
 name: Backend CI
 on:
   push:
-    paths: [backend/**, shared/**, .github/workflows/backend.yml]
+    paths: ["backend/**", "shared/**", ".github/workflows/backend.yml"]
   pull_request:
-    paths: [backend/**, shared/**, .github/workflows/backend.yml]
+    paths: ["backend/**", "shared/**", ".github/workflows/backend.yml"]
+
 jobs:
   backend:
     runs-on: ubuntu-latest
     defaults:
-      run: {working-directory: backend}
+      run:
+        working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
-      - name: Install
+      - name: Install dependencies
         run: npm ci
       - name: Build
         run: npm run build --if-present
