@@ -2,7 +2,9 @@ package com.lenvora.app
 
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.translate.*
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -21,13 +23,19 @@ private object MlLanguageMap {
 }
 
 class OfflineTranslator {
-    suspend fun translate(text: String, source: String, target: String): String {
+    suspend fun translate(
+        text: String,
+        source: String,
+        target: String
+    ): String {
         val sourceLanguage = MlLanguageMap.ml(source)
             ?: error("Unsupported source language: $source")
         val targetLanguage = MlLanguageMap.ml(target)
             ?: error("Unsupported target language: $target")
 
-        if (sourceLanguage == targetLanguage) return text
+        if (sourceLanguage == targetLanguage) {
+            return text
+        }
 
         val translator = Translation.getClient(
             TranslatorOptions.Builder()
@@ -36,12 +44,12 @@ class OfflineTranslator {
                 .build()
         )
 
-        try {
+        return try {
             translator.downloadModelIfNeeded(
                 DownloadConditions.Builder().build()
             ).await()
 
-            return translator.translate(text).await()
+            translator.translate(text).await()
         } finally {
             translator.close()
         }
@@ -51,15 +59,24 @@ class OfflineTranslator {
 private suspend fun <T> Task<T>.await(): T =
     suspendCancellableCoroutine { continuation ->
         addOnSuccessListener { result ->
-            if (continuation.isActive) continuation.resume(result)
+            if (continuation.isActive) {
+                continuation.resume(result)
+            }
         }
+
         addOnFailureListener { error ->
-            if (continuation.isActive) continuation.resumeWithException(error)
+            if (continuation.isActive) {
+                continuation.resumeWithException(error)
+            }
         }
+
         addOnCanceledListener {
-            continuation.cancel()
+            if (continuation.isActive) {
+                continuation.cancel()
+            }
         }
-        continuation.invokeOnCancellation {
-            cancel()
-        }
+
+        // The Google Task will finish on its own if the coroutine is cancelled.
+        // We intentionally do not call Task.cancel(), because Task<T> does not
+        // expose a cancel() API in all supported Play Services versions.
     }
