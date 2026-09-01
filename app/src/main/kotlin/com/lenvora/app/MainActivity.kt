@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,39 +19,61 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LenvoraApp() {
-    var query by remember { mutableStateOf("") }
-    var source by remember { mutableStateOf("English") }
-    var target by remember { mutableStateOf("فارسی") }
+    val scope = rememberCoroutineScope()
+    var source by remember { mutableStateOf("en") }
+    var target by remember { mutableStateOf("fa") }
+    var input by remember { mutableStateOf("") }
+    var result by remember { mutableStateOf("") }
+    var status by remember { mutableStateOf("Ready") }
+    val translator = remember { OfflineTranslator() }
 
     MaterialTheme {
-        Scaffold(
-            topBar = { TopAppBar(title = { Text("Lenvora V2") }) }
-        ) { padding ->
+        Scaffold(topBar={TopAppBar(title={Text("Lenvora V2")})}) { padding ->
             Column(
-                modifier = Modifier.padding(padding).padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                Modifier.padding(padding).padding(20.dp),
+                verticalArrangement=Arrangement.spacedBy(12.dp)
             ) {
-                Text("Offline Dictionary", style = MaterialTheme.typography.headlineSmall)
+                Text("Offline Translation", style=MaterialTheme.typography.headlineSmall)
+                Text("Models are kept on-device after download.", style=MaterialTheme.typography.bodySmall)
+
                 OutlinedTextField(
-                    value=query, onValueChange={query=it},
+                    value=input, onValueChange={input=it},
                     modifier=Modifier.fillMaxWidth(),
                     label={Text("Word or sentence")}
                 )
+
                 Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                    AssistChip(onClick={source=if(source=="English")"فارسی" else "English"},
-                        label={Text("From: $source")})
-                    AssistChip(onClick={target=if(target=="فارسی")"English" else "فارسی"},
-                        label={Text("To: $target")})
+                    Button(onClick={ source = if(source=="en") "fa" else "en" }) { Text("From: $source") }
+                    Button(onClick={ target = if(target=="fa") "en" else "fa" }) { Text("To: $target") }
                 }
-                Button(onClick={}, modifier=Modifier.fillMaxWidth()) { Text("Translate") }
-                OutlinedButton(onClick={}, modifier=Modifier.fillMaxWidth()) { Text("📷 Translate from Camera") }
-                if(query.isNotBlank()) {
-                    Card(modifier=Modifier.fillMaxWidth()) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text("Result", style=MaterialTheme.typography.titleMedium)
-                            Spacer(Modifier.height(8.dp))
-                            Text("Offline translation engine will be connected here.")
-                        }
+
+                Button(
+                    enabled=input.isNotBlank(),
+                    onClick={
+                        scope.launch {
+                            status="Preparing offline model…"
+                            try {
+                                result=translator.translate(input, source, target)
+                                status="Translated offline"
+                            } catch(e:Exception) {
+                                status=e.message ?: "Translation failed"
+                            }
+                        },
+                    },
+                    modifier=Modifier.fillMaxWidth()
+                ) { Text("Translate") }
+
+                OutlinedButton(
+                    onClick={ status="Camera/OCR screen is ready for CameraX integration" },
+                    modifier=Modifier.fillMaxWidth()
+                ) { Text("📷 Scan text from camera") }
+
+                Text(status)
+                if(result.isNotBlank()) Card(Modifier.fillMaxWidth()) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text("Translation", style=MaterialTheme.typography.titleMedium)
+                        Spacer(Modifier.height(8.dp))
+                        Text(result)
                     }
                 }
             }
