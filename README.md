@@ -1,25 +1,13 @@
-# Lenvora V2 Android Base
+# Lenvora V2 — Real Offline OCR + Translation Engine
 
-Android/Kotlin/Jetpack Compose foundation for the offline-first Lenvora app.
+This module adds the real on-device engine using Google ML Kit.
 
-Included:
-- Jetpack Compose UI
-- Word/sentence input
-- Language selection foundation
-- Camera permission
-- Offline-first UI architecture point
-- Room dependencies for local dictionary storage
+- OCR: bundled Latin text recognition, works without network after installation.
+- Translation: on-device ML Kit translation models. Models are downloaded once and then translation can work offline.
+- Language identification: detects the source language before translation.
+- Camera: CameraX preview/capture foundation.
+- Supported target/source examples include Persian, English, Arabic, Turkish, German, French and Spanish.
 
-Not yet included:
-- Real OCR model
-- Real offline translation models
-- Full Room entities/DAO
-- CameraX capture flow
-- Backend sync
-- Ads SDK
+Important: ML Kit translation models are downloaded on demand. The first model download needs connectivity; after the model is installed, translation runs on-device. Google documents models at about 30 MB each and recommends downloading over Wi‑Fi. citeturn0search1
 
-Those should be added in the next stages rather than pretending the placeholder is already an offline translation engine.
-
-## GitHub Actions
-
-If this repository already has `.github/workflows/android.yml`, it can build the Gradle project after the Gradle wrapper is committed.
+OCR accuracy depends on image quality, focus and resolution. citeturn0search6
