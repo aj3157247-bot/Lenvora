@@ -1,32 +1,20 @@
 {
-  "name": "lenvora-backend",
-  "version": "0.1.0",
+  "name": "lenvora-admin",
   "private": true,
-  "description": "Lenvora V2 backend API",
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "test": "vitest run"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^5.1.0",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3",
-    "zod": "^4.0.0"
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest",
+    "typescript": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest"
   },
-  "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.0.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4",
-    "supertest": "^7.1.1",
-    "@types/supertest": "^6.0.3"
-  }
+  "devDependencies": {}
 }
