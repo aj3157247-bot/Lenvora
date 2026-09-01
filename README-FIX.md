@@ -1,8 +1,16 @@
-# Lenvora V2 - Fixed GitHub Actions
+# Lenvora V2 - Real CI Fix
 
-The workflows now explicitly use Node.js 22 and require package-lock.json files so GitHub Actions can resolve npm cache paths.
+This ZIP contains only the changed files needed for the current GitHub Actions failure.
 
-IMPORTANT:
-The included lockfiles are bootstrap manifests. After copying these files, run `npm install` locally in `backend/` and `admin/`, then commit the generated lockfiles. This replaces the bootstrap manifests with complete dependency resolution data and makes `npm ci` deterministic.
+Changes:
+- Node.js 22
+- `npm ci` replaced with `npm install`
+- npm cache remains enabled
+- Cache dependency path points to `package.json`, so the workflow does not require a lockfile
+- No fake/incomplete `package-lock.json` is included
+- Dictionary API is wired into the Express app
+- Dictionary search uses the correct PostgreSQL parameters
 
-If you cannot run npm locally, temporarily change `npm ci` to `npm install` in the two workflows; however, committing complete lockfiles is recommended.
+Copy these files over the matching files in the repository and commit them.
+
+Later, when you intentionally generate real lockfiles with `npm install` locally, you can switch back to `npm ci` and set cache-dependency-path to the real lockfile.
