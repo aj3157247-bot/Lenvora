@@ -15,6 +15,7 @@ android {
         targetSdk = 35
         versionCode = 10
         versionName = "2.0.0"
+        buildConfigField("String", "LENVORA_API_URL", "\"${(project.findProperty("LENVORA_API_URL") as String?) ?: "http://10.0.2.2:4000/api/v1"}\"")
     }
 
     compileOptions {
@@ -28,7 +29,9 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+
 
     packaging {
         resources {
@@ -45,6 +48,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.7.8")
     implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
     implementation("androidx.compose.material3:material3:1.3.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
@@ -70,7 +74,9 @@ dependencies {
     // ML Kit Language Detection
     implementation("com.google.mlkit:language-id:17.0.6")
 
+    // Google Tasks API used by ML Kit coroutine bridge
+    implementation("com.google.android.gms:play-services-tasks:18.2.0")
+
     // HTTP
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.google.android.gms:play-services-tasks:18.2.0")
 }
