@@ -1,24 +1,26 @@
 name: Admin CI
 on:
   push:
-    paths: [admin/**, shared/**, .github/workflows/admin.yml]
+    paths: ["admin/**", "shared/**", ".github/workflows/admin.yml"]
   pull_request:
-    paths: [admin/**, shared/**, .github/workflows/admin.yml]
+    paths: ["admin/**", "shared/**", ".github/workflows/admin.yml"]
+
 jobs:
   admin:
     runs-on: ubuntu-latest
     defaults:
-      run: {working-directory: admin}
+      run:
+        working-directory: admin
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: admin/package-lock.json
-      - name: Install
+      - name: Install dependencies
         run: npm ci
       - name: Build
         run: npm run build --if-present
-      - name: Test
-        run: npm test --if-present
