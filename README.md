@@ -1,13 +1,21 @@
-# Lenvora V2 — Real Offline OCR + Translation Engine
+# Lenvora V2 — Final Project Package
 
-This module adds the real on-device engine using Google ML Kit.
+This is the consolidated project package built during this conversation.
 
-- OCR: bundled Latin text recognition, works without network after installation.
-- Translation: on-device ML Kit translation models. Models are downloaded once and then translation can work offline.
-- Language identification: detects the source language before translation.
-- Camera: CameraX preview/capture foundation.
-- Supported target/source examples include Persian, English, Arabic, Turkish, German, French and Spanish.
+Included:
+- backend API foundation
+- admin API/workflow foundation
+- dictionary database + API
+- Android offline OCR/translation engine
+- GitHub Actions for backend, admin and Android
 
-Important: ML Kit translation models are downloaded on demand. The first model download needs connectivity; after the model is installed, translation runs on-device. Google documents models at about 30 MB each and recommends downloading over Wi‑Fi. citeturn0search1
+Offline engine:
+- OCR with ML Kit
+- language identification
+- on-device ML Kit translation
+- CameraX foundation
 
-OCR accuracy depends on image quality, focus and resolution. citeturn0search6
+Important:
+1. ML Kit translation models are downloaded once before they can be used offline.
+2. The Android Gradle Wrapper (`android/gradlew` and wrapper files) must be committed to GitHub for Android CI to build. The official Gradle guidance recommends using the Gradle Wrapper with `setup-gradle`.
+3. This package is a consolidated foundation, not a claim that every production feature (full admin UI, ads provider, complete CameraX UI, database seed data, release signing) is finished.
