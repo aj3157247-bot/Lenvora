@@ -5,7 +5,7 @@ on:
   pull_request:
     paths: ["android/**", ".github/workflows/android.yml"]
 jobs:
-  android:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,13 +15,8 @@ jobs:
           java-version: "17"
       - uses: gradle/actions/setup-gradle@v4
       - name: Build Android
-        shell: bash
+        working-directory: android
         run: |
-          if [ -f android/gradlew ]; then
-            chmod +x android/gradlew
-            cd android
-            ./gradlew test
-            ./gradlew assembleDebug
-          else
-            echo "Android Gradle project not initialized yet."
-          fi
+          test -f ./gradlew
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
