@@ -1,42 +1,37 @@
 package com.lenvora.app
-
 import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.TranslatorOptions
+import com.google.mlkit.nl.translate.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class OfflineTranslator {
-    suspend fun translate(text: String, source: String, target: String): String {
-        val src = LanguageMap.toMlKit(source) ?: error("Unsupported source language: $source")
-        val dst = LanguageMap.toMlKit(target) ?: error("Unsupported target language: $target")
-        require(src != dst) { "Source and target languages must differ" }
-
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(src)
-            .setTargetLanguage(dst)
-            .build()
-
-        val translator = Translation.getClient(options)
-        try {
-            val conditions = DownloadConditions.Builder().build()
-            awaitVoid { translator.downloadModelIfNeeded(conditions).addOnSuccessListener(it).addOnFailureListener(it) }
-            return await { success, failure ->
-                translator.translate(text).addOnSuccessListener(success).addOnFailureListener(failure)
-            }
-        } finally {
-            translator.close()
-        }
+object LanguageMap{
+    fun ml(code:String)=when(code){
+        "en"->TranslateLanguage.ENGLISH
+        "fa"->TranslateLanguage.PERSIAN
+        "ar"->TranslateLanguage.ARABIC
+        "tr"->TranslateLanguage.TURKISH
+        "de"->TranslateLanguage.GERMAN
+        "fr"->TranslateLanguage.FRENCH
+        "es"->TranslateLanguage.SPANISH
+        else->null
     }
-
-    private suspend fun <T> await(register: ( (T)->Unit, (Exception)->Unit ) -> Unit): T =
-        suspendCancellableCoroutine { cont ->
-            register({ if(cont.isActive) cont.resume(it) }, { if(cont.isActive) cont.resumeWithException(it) })
-        }
-
-    private suspend fun awaitVoid(register: ( (Void)->Unit, (Exception)->Unit ) -> Unit) =
-        suspendCancellableCoroutine<Unit> { cont ->
-            register({ if(cont.isActive) cont.resume(Unit) }, { if(cont.isActive) cont.resumeWithException(it) })
-        }
+}
+class OfflineTranslator{
+    suspend fun translate(text:String,source:String,target:String):String{
+        val s=LanguageMap.ml(source)?:error("Unsupported source language")
+        val t=LanguageMap.ml(target)?:error("Unsupported target language")
+        if(s==t)return text
+        val tr=Translation.getClient(TranslatorOptions.Builder().setSourceLanguage(s).setTargetLanguage(t).build())
+        try{
+            awaitVoid{tr.downloadModelIfNeeded(DownloadConditions.Builder().build()).addOnSuccessListener(it).addOnFailureListener(it)}
+            return await{ok,fail->tr.translate(text).addOnSuccessListener(ok).addOnFailureListener(fail)}
+        }finally{tr.close()}
+    }
+    private suspend fun <T> await(r:((T)->Unit,(Exception)->Unit)->Unit)=suspendCancellableCoroutine{c->
+        r({if(c.isActive)c.resume(it)},{if(c.isActive)c.resumeWithException(it)})
+    }
+    private suspend fun awaitVoid(r:((Void)->Unit,(Exception)->Unit)->Unit)=suspendCancellableCoroutine<Unit>{c->
+        r({if(c.isActive)c.resume(Unit)},{if(c.isActive)c.resumeWithException(it)})
+    }
 }
