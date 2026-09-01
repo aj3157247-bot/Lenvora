@@ -42,8 +42,8 @@ export async function createAd(req: Request, res: Response) {
 
   const a=parsed.data;
   const result=await db.query(`
-    INSERT INTO advertisements(title,description,image_url,target_url,active,start_date,end_date,created_by)
-    VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+    INSERT INTO advertisements(id,title,description,image_url,target_url,active,start_date,end_date,created_by)
+    VALUES(gen_random_uuid(),$1,$2,$3,$4,$5,$6,$7,$8)
     RETURNING *
   `,[a.title,a.description,a.imageUrl,a.targetUrl,a.active,a.startDate,a.endDate,(req as any).user?.id ?? null]);
 
