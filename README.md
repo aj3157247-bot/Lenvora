@@ -1,26 +1,25 @@
-# Lenvora V2 Dictionary Engine
+# Lenvora V2 Android Base
 
-This package adds the dictionary foundation for Lenvora V2.
+Android/Kotlin/Jetpack Compose foundation for the offline-first Lenvora app.
 
-## Features
-- Word search API
-- Meanings
-- Examples
-- Pronunciation fields
-- Favorites/history database tables
-- Admin-only word creation
-- Admin-only meaning creation
-- Translation API contract for the future offline engine
+Included:
+- Jetpack Compose UI
+- Word/sentence input
+- Language selection foundation
+- Camera permission
+- Offline-first UI architecture point
+- Room dependencies for local dictionary storage
 
-## Database
+Not yet included:
+- Real OCR model
+- Real offline translation models
+- Full Room entities/DAO
+- CameraX capture flow
+- Backend sync
+- Ads SDK
 
-Run:
+Those should be added in the next stages rather than pretending the placeholder is already an offline translation engine.
 
-```bash
-psql "$DATABASE_URL" -f database/schema.sql
-psql "$DATABASE_URL" -f database/dictionary.sql
-```
+## GitHub Actions
 
-## Important
-
-The sentence translation engine is **not falsely implemented as a normal dictionary lookup**. Real offline sentence translation requires downloadable/on-device language models. That engine will be added in the Android stage.
+If this repository already has `.github/workflows/android.yml`, it can build the Gradle project after the Gradle wrapper is committed.
