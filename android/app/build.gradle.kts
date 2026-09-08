@@ -78,5 +78,5 @@ dependencies {
     implementation("com.google.android.gms:play-services-tasks:18.2.0")
 
     // HTTP
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp:5.5.0")
 }
